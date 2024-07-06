@@ -29,14 +29,14 @@ public class TransferTest {
         var firstCardInfo = DataHelper.getFirstCardInfo();
         var secondCardInfo = DataHelper.getSecondCardInfo();
 
-        //получили балансы
+        //получили балансы обеих карт
         var firstCardBalance = dashboardPage.getCardBalance(firstCardInfo);
         var secondCardBalance = dashboardPage.getCardBalance(secondCardInfo);
 
         //получили сумму перевода с помощью метода Data-Helper
         var amount = DataHelper.generateValidAmount(firstCardBalance);
 
-        //посчитали ожидаемые балансы карт
+        //указали ожидаемые балансы карт
         var expectedBalanceFirstCard = firstCardBalance - amount;
         var expectedBalanceSecondCard = secondCardBalance + amount;
 
@@ -50,7 +50,7 @@ public class TransferTest {
         var actualBalanceFirstCard = dashboardPage.getCardBalance(firstCardInfo);
         var actualBalanceSecondCard = dashboardPage.getCardBalance(secondCardInfo);
 
-        //сравнили
+        //сравнили ожидаемый и фактический результат
         assertEquals(expectedBalanceFirstCard, actualBalanceFirstCard);
         assertEquals(expectedBalanceSecondCard, actualBalanceSecondCard);
     }
