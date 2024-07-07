@@ -54,4 +54,39 @@ public class TransferTest {
         assertEquals(expectedBalanceFirstCard, actualBalanceFirstCard);
         assertEquals(expectedBalanceSecondCard, actualBalanceSecondCard);
     }
+
+    @Test
+    void shouldGetErrorMessageIfTransferredAmountIsMoreThanBalance() {
+        //получили первую и вторую карту из методов DataHelper
+        var firstCardInfo = DataHelper.getFirstCardInfo();
+        var secondCardInfo = DataHelper.getSecondCardInfo();
+
+        //получили балансы обеих карт
+        var firstCardBalance = dashboardPage.getCardBalance(firstCardInfo);
+        var secondCardBalance = dashboardPage.getCardBalance(secondCardInfo);
+
+        //получили некорректную сумму перевода с помощью метода Data-Helper
+        var amount = DataHelper.generateInvalidAmount(secondCardBalance);
+
+        //указали ожидаемые балансы карт
+        var expectedBalanceFirstCard = firstCardBalance - amount;
+        var expectedBalanceSecondCard = secondCardBalance + amount;
+
+        //выбрали карту для перевода, получили экземляр страницы перевода
+        var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
+
+        //выполнили операцию перевода
+        transferPage.makeTransfer(String.valueOf(amount), secondCardInfo);
+
+        //ищем сообщение об ошибке
+        transferPage.findErrorMessage("Выполнена попытка перевода суммы, превышающей остаток на карте списания");
+
+        //получили фактические балансы
+        var actualBalanceFirstCard = dashboardPage.getCardBalance(firstCardInfo);
+        var actualBalanceSecondCard = dashboardPage.getCardBalance(secondCardInfo);
+
+        //сравнили начальные балансы и фактические балансы
+        assertEquals(firstCardBalance, actualBalanceFirstCard);
+        assertEquals(secondCardBalance, actualBalanceSecondCard);
+    }
 }
